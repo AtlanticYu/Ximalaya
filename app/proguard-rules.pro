@@ -19,3 +19,22 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn okio.**
+-keep class okio.** { *;}
+
+-dontwarn com.squareup.okhttp.**
+-keep class com.squareup.okhttp.** { *;}
+
+-dontwarn com.ximalaya.ting.android.player.**
+-keep class com.ximalaya.ting.android.player.** { *;}
+
+-dontwarn com.google.gson.**
+-keep class com.google.gson.** {*;}
+
+-dontwarn org.litepal.**
+-keep class org.litepal.** {*;}
+
+-keep class com.ximalaya.ting.android.opensdk.** {*;}
+-keep interface com.ximalaya.ting.android.opensdk.** {*;}
+-keep public enum com.ximalaya.ting.android.opensdk.** { *; }
