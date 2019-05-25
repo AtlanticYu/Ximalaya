@@ -16,11 +16,12 @@ public class FragmentCreator {
 
     public final static int  PAGE_COUNT = 3;
 
+    //界面缓存
     private static Map<Integer, BaseFragment> sCache = new HashMap<>();
 
     public static BaseFragment getFragment(int index) {
         BaseFragment baseFragment = sCache.get(index);
-
+        //缓存为空
         if (baseFragment != null) {
             return baseFragment;
         }

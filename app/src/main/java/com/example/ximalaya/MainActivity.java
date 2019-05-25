@@ -32,12 +32,26 @@ public class MainActivity extends FragmentActivity {
     private static final String TAG = "TestActivity";
     private ViewPager mContentPager;
     private MagicIndicator mMagicIndicator;
+    private IndicatorAdapter mIndicatorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        initEvent();
+    }
+
+    private void initEvent() {
+        mIndicatorAdapter.setOnIndicatorTapClickListener(new IndicatorAdapter.OnIndicatorTapClickListener() {
+            @Override
+            public void onTabClick(int index) {
+                LogUtil.d(TAG,"点击的页面是   -->" + index);
+                if (mContentPager != null) {
+                    mContentPager.setCurrentItem(index);
+                }
+            }
+        });
     }
 
     private void initView() {
@@ -45,9 +59,10 @@ public class MainActivity extends FragmentActivity {
         mMagicIndicator.setBackgroundColor(this.getResources().getColor(R.color.main_color));
 
         //创建indicator的适配器
-        IndicatorAdapter adapter = new IndicatorAdapter(this);
+        mIndicatorAdapter = new IndicatorAdapter(this);
         CommonNavigator commonNavigator = new CommonNavigator(this);
-        commonNavigator.setAdapter(adapter);
+        commonNavigator.setAdjustMode(true);
+        commonNavigator.setAdapter(mIndicatorAdapter);
         //设置要显示的内容
 
 
