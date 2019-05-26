@@ -38,4 +38,6 @@ dependencies {
     implementation files('libs/XmDownload_1.6.jar')
     implementation files('libs/XmlyOAuth2SDK_V1.8.jar')
     implementation 'com.github.hackware1993:MagicIndicator:1.6.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.squareup.picasso:picasso:2.3.2'
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+<!-- recyclerview每一条数据可通过此布局文件设置小圆角 -->
+
+    <size
+        android:height="75dp"
+        android:width="350dp">
+    </size>
+
+    <solid android:color="#ffffffff"></solid>
+
+    <corners android:radius="4dp"></corners>
+
+</shape>
