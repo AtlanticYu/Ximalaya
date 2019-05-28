@@ -87,7 +87,7 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
             //播放数目为long类型，加“”表示拼接为字符串类型
             albumPlayCountTv.setText(album.getPlayCount() + "");
             albumContentCountTv.setText(album.getIncludeTrackCount() + "");
-
+            //节目封面
             Picasso.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIy);
         }
     }

@@ -1,0 +1,121 @@
+package com.example.ximalaya.presenters;
+
+import android.support.annotation.Nullable;
+
+import com.example.ximalaya.interfaces.IRecommendPresenter;
+import com.example.ximalaya.interfaces.IRecommendViewCallback;
+import com.example.ximalaya.utils.Constants;
+import com.example.ximalaya.utils.LogUtil;
+import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
+import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
+import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
+import com.ximalaya.ting.android.opensdk.model.album.Album;
+import com.ximalaya.ting.android.opensdk.model.album.GussLikeAlbumList;
+
+import java.lang.invoke.MutableCallSite;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Android Studio.
+ * User: AtlanticYu
+ * Date: 2019/5/28
+ * Time: 22:22
+ */
+public class RecommendPresenter implements IRecommendPresenter {
+
+    private static final String TAG = "RecommendPresenter";
+
+    private List<IRecommendViewCallback> mCallback = new ArrayList<>();
+
+    private RecommendPresenter() {
+
+    }
+    private static RecommendPresenter sInstance = null;
+
+    /*
+        获取单例对象
+     */
+
+    public static RecommendPresenter getInstance() {
+        if (sInstance == null) {
+            //synchronized(this)为一个对象锁,同一时间只有一个线程访问
+            synchronized (RecommendPresenter.class) {
+                if (sInstance == null) {
+                    sInstance = new RecommendPresenter();
+                }
+            }
+        }
+        return sInstance;
+    }
+
+    @Override
+    public void getRecommendList() {
+        /**
+         * 获取推荐内容，即猜你喜欢
+         */
+
+        //封装参数
+        Map<String, String> map = new HashMap<>();
+        //一页数据返回多少条
+        map.put(DTransferConstants.LIKE_COUNT, Constants.recommend_count + "");
+        CommonRequest.getGuessLikeAlbum(map, new IDataCallBack<GussLikeAlbumList>() {
+            @Override
+            public void onSuccess(@Nullable GussLikeAlbumList gussLikeAlbumList) {
+                //数据获取成功
+                if (gussLikeAlbumList != null) {
+                    List<Album> albumList = gussLikeAlbumList.getAlbumList();
+                    if (albumList != null) {
+                        LogUtil.d(TAG,"size -- >" + albumList.size());
+                        handlerRecommendResult(albumList);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                //数据获取出错
+                LogUtil.d(TAG,"error  -- > " + i);
+                LogUtil.d(TAG,"errorMsg  -- > " + s);
+            }
+        });
+    }
+
+
+
+
+    private void handlerRecommendResult(List<Album> albumList) {
+        //通知UI更新，即转到了Fragment处理
+        if (mCallback != null) {
+            for (IRecommendViewCallback callback : mCallback) {
+                callback.onRecommendListLoaded(albumList);
+            }
+        }
+    }
+
+    @Override
+    public void pullRefreshMore() {
+
+    }
+
+    @Override
+    public void loadMore() {
+
+    }
+
+    @Override
+    public void registerViewCallback(IRecommendViewCallback callback) {
+        if (mCallback != null && !mCallback.contains(callback)) {
+            mCallback.add(callback);
+        }
+    }
+
+    @Override
+    public void unRegisterViewCallback(IRecommendViewCallback callback) {
+
+    }
+
+
+}

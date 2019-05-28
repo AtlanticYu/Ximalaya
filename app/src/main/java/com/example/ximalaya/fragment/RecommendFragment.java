@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import com.example.ximalaya.R;
 import com.example.ximalaya.adapters.RecommendListAdapter;
 import com.example.ximalaya.base.BaseFragment;
+import com.example.ximalaya.interfaces.IRecommendViewCallback;
+import com.example.ximalaya.presenters.RecommendPresenter;
 import com.example.ximalaya.utils.Constants;
 import com.example.ximalaya.utils.LogUtil;
 import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
@@ -26,12 +28,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecommendFragment extends BaseFragment {
+public class RecommendFragment extends BaseFragment implements IRecommendViewCallback {
 
     private static final String TAG = "RecommendFragment";
     private View mRootView;
     private RecyclerView mRecommendRv;
     private RecommendListAdapter mRecommendListAdapter;
+    private RecommendPresenter mRecommendPresenter;
 
     @Override
     protected View onSubViewLoaded(LayoutInflater layoutInflater, ViewGroup container) {
@@ -59,46 +62,43 @@ public class RecommendFragment extends BaseFragment {
         //3.设置适配器
         mRecommendListAdapter = new RecommendListAdapter();
         mRecommendRv.setAdapter(mRecommendListAdapter);
-        //获取数据
-        getRecommendData();
+        //获取到逻辑层的对象
+   //     getRecommendData();
+        //获取到逻辑层的对象
+        mRecommendPresenter = RecommendPresenter.getInstance();
+        //先要设置通知接口的注册
+        mRecommendPresenter.registerViewCallback(this);
+        //获取推荐列表
+        mRecommendPresenter.getRecommendList();
         
         //返回给界面显示
         return mRootView;
     }
 
-    /**
-     * 获取推荐内容，即猜你喜欢
-     */
-    private void getRecommendData() {
-        //封装参数
-        Map<String, String> map = new HashMap<>();
-        //一页数据返回多少条
-        map.put(DTransferConstants.LIKE_COUNT, Constants.recommand_count + "");
-        CommonRequest.getGuessLikeAlbum(map, new IDataCallBack<GussLikeAlbumList>() {
-            @Override
-            public void onSuccess(@Nullable GussLikeAlbumList gussLikeAlbumList) {
-                //数据获取成功
-                if (gussLikeAlbumList != null) {
-                    List<Album> albumList = gussLikeAlbumList.getAlbumList();
-                    if (albumList != null) {
-                        LogUtil.d(TAG,"size -- >" + albumList.size());
-                        upRecommendUI(albumList);
-                    }
-                }
-            }
 
-            @Override
-            public void onError(int i, String s) {
-                //数据获取出错
-                LogUtil.d(TAG,"error  -- > " + i);
-                LogUtil.d(TAG,"errorMsg  -- > " + s);
-            }
-        });
+    @Override
+    public void onRecommendListLoaded(List<Album> result) {
+        //presenter执行成功后跳转到此处理数据
+        //把数据设置给适配器，并且更新UI
+        mRecommendListAdapter.setData(result);
+    }
+
+    @Override
+    public void onLoadMore(List<Album> result) {
 
     }
 
-    private void upRecommendUI(List<Album> albumList) {
-        //把数据设置给适配器，并且更新UI
-        mRecommendListAdapter.setData(albumList);
+    @Override
+    public void onRefreshMore(List<Album> result) {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        //取消接口的注释，避免内存泄漏和内存溢出
+        if (mRecommendPresenter != null) {
+            mRecommendPresenter.unRegisterViewCallback(this);
+        }
     }
 }
