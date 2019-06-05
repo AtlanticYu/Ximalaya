@@ -50,7 +50,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         };
         //获取到逻辑层的对象
         mRecommendPresenter = RecommendPresenter.getInstance();
-        //先要设置通知接口的注册，即回调函数注册
+        //先要设置通知接口的注册，即回调函数注册，方便presenter给我们传回来数值结果，
         mRecommendPresenter.registerViewCallback(this);
         //获取推荐列表
         mRecommendPresenter.getRecommendList();
@@ -91,9 +91,10 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         return mRootView;
     }
 
-
+    //Presenter回调此函数完成数据设置
     @Override
     public void onRecommendListLoaded(List<Album> result) {
+        //当获取到推荐内容的时候，这个方法就会被调用
         //presenter执行成功后跳转到此处理数据
         //把数据设置给适配器，并且更新UI
         mRecommendListAdapter.setData(result);

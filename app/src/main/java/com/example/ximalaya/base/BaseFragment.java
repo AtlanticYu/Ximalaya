@@ -20,7 +20,7 @@ public abstract class BaseFragment extends Fragment {
         return mRootView;
     }
 
-
+    //交给其余的子界面进行加载，此处仅声明子布局需要实现此函数，然后把view对象返回给上个方法的mRootView
     protected abstract View onSubViewLoaded(LayoutInflater layoutInflater, ViewGroup container);
 
 }

@@ -93,15 +93,19 @@ public class RecommendPresenter implements IRecommendPresenter {
         }
     }
 
-    //获取成功后的两种判断
+    //获取成功后的两种判断，已经处理了数据请求，根据返回的结果集分发（即回调）给相应注册的Fragment
+    // （可能包含多个界面，这时候mCallback列表的优势就体现了，很方便地把数据分发给需要的Fragment们）
     private void handlerRecommendResult(List<Album> albumList) {
         if (albumList != null) {
+            //test,可观察没找到的界面
+            //albumList.clear();
             if (albumList.size() == 0) {
                 for (IRecommendViewCallback callback : mCallback) {
                     callback.onEmpty();
                 }
             } else {
                 for (IRecommendViewCallback callback : mCallback) {
+                    //回调到RecommendFragment类中执行onRecommendListLoaded（）方法
                     callback.onRecommendListLoaded(albumList);
                 }
             }
@@ -124,7 +128,7 @@ public class RecommendPresenter implements IRecommendPresenter {
     public void loadMore() {
 
     }
-
+    //Fragment登记到mCallback列表里
     @Override
     public void registerViewCallback(IRecommendViewCallback callback) {
         if (mCallback != null && !mCallback.contains(callback)) {
@@ -134,7 +138,8 @@ public class RecommendPresenter implements IRecommendPresenter {
 
     @Override
     public void unRegisterViewCallback(IRecommendViewCallback callback) {
-
+        if (mCallback != null)
+            mCallback.remove(callback);
     }
 
 

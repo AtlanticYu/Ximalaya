@@ -4,10 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:layout_centerInParent="true"
-        android:text="正在加载"/>
+        android:orientation="vertical">
+
+        <com.example.ximalaya.views.LoadingView
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="正在玩命加载"/>
+
+    </LinearLayout>
+
+
 
 </RelativeLayout>
