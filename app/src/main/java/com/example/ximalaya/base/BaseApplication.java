@@ -2,10 +2,13 @@ package com.example.ximalaya.base;
 
 import android.app.Application;
 import android.util.Log;
+import android.os.Handler;
 
 import com.example.ximalaya.utils.LogUtil;
+import com.example.ximalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
+
 
 /*
 **
@@ -15,6 +18,8 @@ import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 public class BaseApplication extends Application {
 
     private static final String TAG = "BaseApplication";
+
+    private static Handler sHandler = null;
 
     @Override
     public void onCreate() {
@@ -34,7 +39,11 @@ public class BaseApplication extends Application {
             mXimalaya.setPackid("com.ximalaya.qunfeng");
             mXimalaya.init(this ,mAppSecret);
         }
+        //UILoader需要借助它在主线程更新UI
+        sHandler = new Handler();
+    }
 
-
+    public static Handler getHandler() {
+        return sHandler;
     }
 }

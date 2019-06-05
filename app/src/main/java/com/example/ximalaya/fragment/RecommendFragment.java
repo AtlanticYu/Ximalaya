@@ -16,6 +16,7 @@ import com.example.ximalaya.interfaces.IRecommendViewCallback;
 import com.example.ximalaya.presenters.RecommendPresenter;
 import com.example.ximalaya.utils.Constants;
 import com.example.ximalaya.utils.LogUtil;
+import com.example.ximalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
@@ -28,20 +29,45 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecommendFragment extends BaseFragment implements IRecommendViewCallback {
+public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener {
 
     private static final String TAG = "RecommendFragment";
     private View mRootView;
     private RecyclerView mRecommendRv;
     private RecommendListAdapter mRecommendListAdapter;
     private RecommendPresenter mRecommendPresenter;
+    private UILoader mUILoader;
 
     @Override
-    protected View onSubViewLoaded(LayoutInflater layoutInflater, ViewGroup container) {
+    protected View onSubViewLoaded(final LayoutInflater layoutInflater, ViewGroup container) {
 
-        //加载view
+        //实现抽象方法
+        mUILoader = new UILoader(getContext()) {
+            @Override
+            public View getSuccessView(ViewGroup container) {
+                return createSuccessView(layoutInflater,container);
+            }
+        };
+        //获取到逻辑层的对象
+        mRecommendPresenter = RecommendPresenter.getInstance();
+        //先要设置通知接口的注册，即回调函数注册
+        mRecommendPresenter.registerViewCallback(this);
+        //获取推荐列表
+        mRecommendPresenter.getRecommendList();
+        //instanceof 判断其左边对象是否为其右边类的实例
+        if (mUILoader.getParent() instanceof  ViewGroup) {
+            ((ViewGroup) mUILoader.getParent()).removeView(mUILoader);
+        }
+
+        mUILoader.setOnRetryClickListener(this);
+
+        //返回给界面显示
+        return mUILoader;
+    }
+
+    private View createSuccessView(LayoutInflater layoutInflater,ViewGroup container) {
+        //view加载完成
         mRootView = layoutInflater.inflate(R.layout.fragment_recommend,container,false);
-
         //RecyclerView的使用
         //1.找到控件
         mRecommendRv = mRootView.findViewById(R.id.recommend_list);
@@ -62,16 +88,6 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         //3.设置适配器
         mRecommendListAdapter = new RecommendListAdapter();
         mRecommendRv.setAdapter(mRecommendListAdapter);
-        //获取到逻辑层的对象
-   //     getRecommendData();
-        //获取到逻辑层的对象
-        mRecommendPresenter = RecommendPresenter.getInstance();
-        //先要设置通知接口的注册
-        mRecommendPresenter.registerViewCallback(this);
-        //获取推荐列表
-        mRecommendPresenter.getRecommendList();
-        
-        //返回给界面显示
         return mRootView;
     }
 
@@ -81,17 +97,24 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         //presenter执行成功后跳转到此处理数据
         //把数据设置给适配器，并且更新UI
         mRecommendListAdapter.setData(result);
+        mUILoader.updateStatus(UILoader.UIStatus.SUCCESS);
     }
 
     @Override
-    public void onLoadMore(List<Album> result) {
-
+    public void onNetworkError() {
+        mUILoader.updateStatus(UILoader.UIStatus.NETWORK_ERROE);
     }
 
     @Override
-    public void onRefreshMore(List<Album> result) {
-
+    public void onEmpty() {
+        mUILoader.updateStatus(UILoader.UIStatus.EMPTY);
     }
+
+    @Override
+    public void onLoading() {
+        mUILoader.updateStatus(UILoader.UIStatus.LOADING);
+    }
+
 
     @Override
     public void onDestroyView() {
@@ -99,6 +122,15 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         //取消接口的注释，避免内存泄漏和内存溢出
         if (mRecommendPresenter != null) {
             mRecommendPresenter.unRegisterViewCallback(this);
+        }
+    }
+
+    @Override
+    public void OnRetryClick() {
+        //表示网络不佳时重新获取数据
+        //重新获取数据即可
+        if (mRecommendPresenter != null) {
+            mRecommendPresenter.getRecommendList();
         }
     }
 }
