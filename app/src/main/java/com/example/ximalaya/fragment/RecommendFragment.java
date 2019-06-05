@@ -1,5 +1,6 @@
 package com.example.ximalaya.fragment;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ximalaya.DetailActivity;
 import com.example.ximalaya.R;
 import com.example.ximalaya.adapters.RecommendListAdapter;
 import com.example.ximalaya.base.BaseFragment;
@@ -29,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener {
+public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener, RecommendListAdapter.onRecommendItemClickListener {
 
     private static final String TAG = "RecommendFragment";
     private View mRootView;
@@ -88,6 +90,8 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         //3.设置适配器
         mRecommendListAdapter = new RecommendListAdapter();
         mRecommendRv.setAdapter(mRecommendListAdapter);
+        //开始注册本Fragment，传递给Adapter，方便回调
+        mRecommendListAdapter.setOnRecommendItemClickListener(this);
         return mRootView;
     }
 
@@ -133,5 +137,12 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         if (mRecommendPresenter != null) {
             mRecommendPresenter.getRecommendList();
         }
+    }
+    //RecommendListAdapter的item点击事件捕获函数回调到此处
+    @Override
+    public void onItemClick(int position) {
+        //item被点击了，跳转到详情
+        Intent intent = new Intent(getContext(), DetailActivity.class);
+        startActivity(intent);
     }
 }

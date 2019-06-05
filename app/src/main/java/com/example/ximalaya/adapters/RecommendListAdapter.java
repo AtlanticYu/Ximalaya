@@ -24,6 +24,7 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
     private List<Album> mData = new ArrayList<>();
 
     private static final String TAG = "RecommendListAdapter";
+    private onRecommendItemClickListener mItemClickListener = null;
 
     @NonNull
     @Override
@@ -38,6 +39,15 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
     public void onBindViewHolder(@NonNull RecommendListAdapter.InnerHolder innerHolder, int i) {
         //设置数据,涉及即将出现在屏幕上的一条数据,第一次翻到第i条数据就执行一次此函数,下翻最后一条+1，上翻牵扯之前的数据
         innerHolder.itemView.setTag(i);
+        innerHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mItemClickListener != null) {
+                    mItemClickListener.onItemClick((Integer) view.getTag());
+                }
+                Log.d(TAG,"innerHolder.itemView click -->" + view.getTag());
+            }
+        });
         innerHolder.setData(mData.get(i));
 
     }
@@ -82,7 +92,7 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
             TextView albumContentCountTv = itemView.findViewById(R.id.album_content_size);
 
             albumTitleTv.setText(album.getAlbumTitle());
-            LogUtil.d(TAG,"---->节目题目" + album.getAlbumTitle());
+//            LogUtil.d(TAG,"---->节目题目" + album.getAlbumTitle());
             albumDescrTv.setText(album.getAlbumIntro());
             //播放数目为long类型，加“”表示拼接为字符串类型
             albumPlayCountTv.setText(album.getPlayCount() + "");
@@ -90,5 +100,13 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
             //节目封面
             Picasso.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIy);
         }
+    }
+
+    public void setOnRecommendItemClickListener(onRecommendItemClickListener listener) {
+        this.mItemClickListener = listener;
+    }
+
+    public interface onRecommendItemClickListener {
+        void onItemClick(int position);
     }
 }
