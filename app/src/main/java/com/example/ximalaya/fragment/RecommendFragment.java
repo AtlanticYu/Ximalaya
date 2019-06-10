@@ -3,7 +3,6 @@ package com.example.ximalaya.fragment;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,21 +14,14 @@ import com.example.ximalaya.R;
 import com.example.ximalaya.adapters.RecommendListAdapter;
 import com.example.ximalaya.base.BaseFragment;
 import com.example.ximalaya.interfaces.IRecommendViewCallback;
+import com.example.ximalaya.presenters.AlbumDetailPresenter;
 import com.example.ximalaya.presenters.RecommendPresenter;
-import com.example.ximalaya.utils.Constants;
-import com.example.ximalaya.utils.LogUtil;
 import com.example.ximalaya.views.UILoader;
-import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
-import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
-import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
-import com.ximalaya.ting.android.opensdk.model.album.GussLikeAlbumList;
 
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener, RecommendListAdapter.onRecommendItemClickListener {
 
@@ -140,7 +132,8 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
     }
     //RecommendListAdapter的item点击事件捕获函数回调到此处
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(int position, Album album) {
+        AlbumDetailPresenter.getsInstance().setTargetAlbum(album);
         //item被点击了，跳转到详情
         Intent intent = new Intent(getContext(), DetailActivity.class);
         startActivity(intent);

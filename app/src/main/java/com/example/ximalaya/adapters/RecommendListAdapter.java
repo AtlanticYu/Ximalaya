@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ximalaya.R;
-import com.example.ximalaya.utils.LogUtil;
 import com.squareup.picasso.Picasso;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 
@@ -43,7 +42,8 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
             @Override
             public void onClick(View view) {
                 if (mItemClickListener != null) {
-                    mItemClickListener.onItemClick((Integer) view.getTag());
+                    int clickposition = (int) view.getTag();
+                    mItemClickListener.onItemClick(clickposition,mData.get(clickposition));
                 }
                 Log.d(TAG,"innerHolder.itemView click -->" + view.getTag());
             }
@@ -107,6 +107,6 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
     }
 
     public interface onRecommendItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(int position, Album album);
     }
 }
