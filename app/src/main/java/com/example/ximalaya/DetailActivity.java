@@ -1,6 +1,7 @@
 package com.example.ximalaya;
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,7 +14,10 @@ import com.example.ximalaya.base.BaseActivity;
 import com.example.ximalaya.interfaces.IAlbumDetailPresenter;
 import com.example.ximalaya.interfaces.IAlbumDetailViewCallback;
 import com.example.ximalaya.presenters.AlbumDetailPresenter;
+import com.example.ximalaya.utils.ImageBlur;
+import com.example.ximalaya.utils.LogUtil;
 import com.example.ximalaya.views.RoundRectImageView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
@@ -27,6 +31,8 @@ import java.util.List;
  * Time: 23:25
  */
 public class DetailActivity extends BaseActivity implements IAlbumDetailViewCallback {
+
+    private static final String TAG = "DetailActivity";
     private ImageView mLargeCover;
     private RoundRectImageView mSmallCover;
     private TextView mAlbumTitlt;
@@ -70,8 +76,26 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
             mAlbumAuthor.setText(album.getAnnouncer().getNickname());
         }
         if (mLargeCover != null) {
-            Picasso.with(this).load(album.getCoverUrlLarge()).into(mLargeCover);
+            //网络加载成功才开始模糊，这样安全，picasso为异步，若失败则会崩溃，所以需要处理
+            Picasso.with(this).load(album.getCoverUrlLarge()).into(mLargeCover, new Callback() {
+                @Override
+                public void onSuccess() {
+                    Drawable drawable = mLargeCover.getDrawable();
+                    if(drawable != null) {
+                        //到这里才有图片
+                        //设置模糊,这里的this必须指定
+                        ImageBlur.makeBlur(mLargeCover,DetailActivity.this);
+                    }
+
+                }
+
+                @Override
+                public void onError() {
+                    LogUtil.d(TAG,"onError 加载详情的封面失败");
+                }
+            });
         }
+
         if (mSmallCover != null) {
             Picasso.with(this).load(album.getCoverUrlLarge()).into(mSmallCover);
         }
