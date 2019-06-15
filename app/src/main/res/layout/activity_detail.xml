@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4d4d4d">
+    android:background="#fff4f4f4">
 
     <ImageView
         android:id="@+id/iv_large_cover"
@@ -121,13 +121,17 @@
             android:textColor="@color/sub_text_title"
             android:text="作者信息"/>
     </LinearLayout>
-    
-    <android.support.v7.widget.RecyclerView
-        android:layout_below="@id/player_control_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
 
-    </android.support.v7.widget.RecyclerView>
+    <!--  在这里面可显示各种状态 -->
+    <FrameLayout
+        android:id="@+id/detail_list_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/player_control_container"
+        >
+
+    </FrameLayout>
+
 
 
 </RelativeLayout>
