@@ -97,8 +97,12 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
             //播放数目为long类型，加“”表示拼接为字符串类型
             albumPlayCountTv.setText(album.getPlayCount() + "");
             albumContentCountTv.setText(album.getIncludeTrackCount() + "");
-            //节目封面
-            Picasso.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIy);
+            //节目封面, path.trim().length() == 0 ,如果不加判断可能造成图片url地址未获取到致使picasso失败，程序崩溃，（没错，就是没有数据）
+            //多此判断也不会致使图片无法加载，只是图片需后加载
+            if (album.getCoverUrlLarge().length() != 0)
+            {
+                Picasso.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIy);
+            }
         }
     }
 

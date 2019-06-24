@@ -96,7 +96,7 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
         }
     }
 
-    //回调到fragment处理数据进行显示
+    //回调到DetailActivity处理数据进行显示
     //因为这里是主线程(通过打印Thread.currentThread().getName()可得知)，所以可直接通知UI，不用handler
     private void handlerAlbumDetailResult(List<Track> tracks) {
         for (IAlbumDetailViewCallback mCallback : mCallbacks) {
@@ -115,7 +115,7 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
     }
 
     @Override
-    public void unregisterViewCallback(IAlbumDetailViewCallback detailViewCallback) {
+    public void unRegisterViewCallback(IAlbumDetailViewCallback detailViewCallback) {
         mCallbacks.remove(detailViewCallback);
     }
 

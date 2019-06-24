@@ -1,6 +1,7 @@
 package com.example.ximalaya.base;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 import android.os.Handler;
 
@@ -8,6 +9,7 @@ import com.example.ximalaya.utils.LogUtil;
 import com.example.ximalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
+import com.ximalaya.ting.android.opensdk.player.XmPlayerManager;
 
 
 /*
@@ -20,6 +22,8 @@ public class BaseApplication extends Application {
     private static final String TAG = "BaseApplication";
 
     private static Handler sHandler = null;
+
+    private static Context sContext = null;
 
     @Override
     public void onCreate() {
@@ -39,10 +43,22 @@ public class BaseApplication extends Application {
             mXimalaya.setPackid("com.ximalaya.qunfeng");
             mXimalaya.init(this ,mAppSecret);
         }
+        //初始化播放器
+        XmPlayerManager.getInstance(this).init();
+
+
         //UILoader需要借助它在主线程更新UI
         sHandler = new Handler();
+
+        sContext = getBaseContext();
     }
 
+    //暴漏接口,PlayerPresenter中使用它获取实例
+    public static Context getAppContext() {
+        return sContext;
+    }
+
+    //方便其他线程调用handler（即主线程）来操作UI
     public static Handler getHandler() {
         return sHandler;
     }

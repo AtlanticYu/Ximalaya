@@ -1,12 +1,14 @@
 package com.example.ximalaya.interfaces;
 
+import com.example.ximalaya.base.IBasePresenter;
+
 /**
  * Created by Android Studio.
  * User: AtlanticYu
  * Date: 2019/6/10
  * Time: 23:07
  */
-public interface IAlbumDetailPresenter {
+public interface IAlbumDetailPresenter extends IBasePresenter<IAlbumDetailViewCallback> {
 
     /**
      * 下拉刷新内容
@@ -24,15 +26,5 @@ public interface IAlbumDetailPresenter {
      *获取专辑详情
      */
     void getAlbumDetail(int albumId,int page);
-
-    /*
-        注册UI通知的接口
-     */
-    void registerViewCallback(IAlbumDetailViewCallback detailViewCallback);
-
-    /*
-        删除UI通知的接口
-     */
-    void unregisterViewCallback(IAlbumDetailViewCallback detailViewCallback);
 
 }

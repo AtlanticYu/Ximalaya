@@ -1,12 +1,14 @@
 package com.example.ximalaya.interfaces;
 
+import com.example.ximalaya.base.IBasePresenter;
+
 /**
  * Created by Android Studio.
  * User: AtlanticYu
  * Date: 2019/5/26
  * Time: 22:48
  */
-public interface IRecommendPresenter {
+public interface IRecommendPresenter extends IBasePresenter< IRecommendViewCallback> {
     /**
      * 获取推荐内容
      */
@@ -26,13 +28,5 @@ public interface IRecommendPresenter {
 
     void loadMore();
 
-    /*
-        这个方法用于注册UI的回调
-     */
-    void registerViewCallback(IRecommendViewCallback callback);
-
-    /*
-        取消UI的回调注册，避免内存泄漏
-     */
     void unRegisterViewCallback(IRecommendViewCallback callback);
 }

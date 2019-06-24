@@ -1,9 +1,9 @@
 package com.example.ximalaya;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,9 +19,9 @@ import android.widget.TextView;
 
 import com.example.ximalaya.adapters.DetailListAdapter;
 import com.example.ximalaya.base.BaseActivity;
-import com.example.ximalaya.interfaces.IAlbumDetailPresenter;
 import com.example.ximalaya.interfaces.IAlbumDetailViewCallback;
 import com.example.ximalaya.presenters.AlbumDetailPresenter;
+import com.example.ximalaya.presenters.PlayerPresenter;
 import com.example.ximalaya.utils.ImageBlur;
 import com.example.ximalaya.utils.LogUtil;
 import com.example.ximalaya.views.RoundRectImageView;
@@ -41,7 +41,7 @@ import java.util.List;
  * Date: 2019/6/5
  * Time: 23:25
  */
-public class DetailActivity extends BaseActivity implements IAlbumDetailViewCallback, UILoader.OnRetryClickListener {
+public class DetailActivity extends BaseActivity implements IAlbumDetailViewCallback, UILoader.OnRetryClickListener, DetailListAdapter.ItemClickListener {
 
     private static final String TAG = "DetailActivity";
     private ImageView mLargeCover;
@@ -116,6 +116,8 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
                 outRect.right = UIUtil.dip2px(view.getContext(),3);
             }
         });
+
+        mDetailListAdapter.setItemClickListener(this);
         return detailListView;
     }
 
@@ -194,5 +196,18 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         if (mAlbumDetailPresenter != null) {
             mAlbumDetailPresenter.getAlbumDetail((int) mCurrentId,mCurrentPage);
         }
+    }
+
+    @Override
+    public void onItemClick(List<Track> detailData, int position) {
+
+        //设置播放器的数据
+        PlayerPresenter playerPresenter = PlayerPresenter.getPlayerPresenter();
+        playerPresenter.setPlayList(detailData,position);
+
+        //跳转到播放器界面
+        Intent intent = new Intent(this,PlayerActivity.class);
+        startActivity(intent);
+
     }
 }
