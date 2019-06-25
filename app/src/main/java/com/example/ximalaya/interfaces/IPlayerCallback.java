@@ -20,7 +20,7 @@ public interface IPlayerCallback {
     void onPlayStart();
 
     //暂停播放
-    void onPause();
+    void onPlayPause();
 
     // 停止播放
     void onPlayStop();
@@ -42,7 +42,7 @@ public interface IPlayerCallback {
     void onPlayModeChange(XmPlayListControl.PlayMode playMode);
 
     //进度条改变
-    void onProgressChange(long currentProgress ,long total);
+    void onProgressChange(int currentProgress ,int total);
 
     //广告正在加载
     void onAdLoading();

@@ -28,5 +28,4 @@ public interface IRecommendPresenter extends IBasePresenter< IRecommendViewCallb
 
     void loadMore();
 
-    void unRegisterViewCallback(IRecommendViewCallback callback);
 }

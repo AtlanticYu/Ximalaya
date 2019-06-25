@@ -6,7 +6,7 @@ package com.example.ximalaya.base;
  * Date: 2019/6/20
  * Time: 22:04
  */
-//泛型
+//泛型,其余更详细的接口继承此接口，然后在指定更具体的参数类型
 public interface IBasePresenter<T> {
 
     /*

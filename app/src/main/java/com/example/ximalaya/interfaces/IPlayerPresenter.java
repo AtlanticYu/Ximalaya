@@ -11,7 +11,7 @@ import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
  * Date: 2019/6/20
  * Time: 22:03
  */
-public interface IPlayerPresenter extends IBasePresenter<IPlayerPresenter> {
+public interface IPlayerPresenter extends IBasePresenter<IPlayerCallback> {
 
     // 播放
     void play();
@@ -61,5 +61,8 @@ public interface IPlayerPresenter extends IBasePresenter<IPlayerPresenter> {
     void onCompletePlayAds();
 
     void onError(int what,int extra);
+
+    //判断播放器是否正在播放
+    boolean isPlay();
 
 }
