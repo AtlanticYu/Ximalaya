@@ -3,6 +3,7 @@ package com.example.ximalaya;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -39,6 +40,14 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
     private TextView mCurrentPosition;
 
     private SeekBar mDurationBar;
+
+    private ImageView mPlayNextBtn;
+
+    private ImageView mPlayPreBtn;
+
+    private TextView mTraceTitleTv;
+
+    private String mTrackTitleText;
 
     private int mCurrentProgress = 0;
     private boolean mIsUserTouchProgressBar = false;
@@ -110,6 +119,26 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
                 mPlayerPresenter.seekTo(mCurrentProgress);
             }
         });
+
+        mPlayPreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //上一曲
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.playPre();
+                }
+            }
+        });
+
+        mPlayNextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //下一曲
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.playNext();
+                }
+            }
+        });
     }
 
     //找到相关控件
@@ -118,6 +147,13 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
         mTotalDuration = this.findViewById(R.id.track_duration);
         mCurrentPosition = this.findViewById(R.id.current_position);
         mDurationBar = this.findViewById(R.id.track_seek_bar);
+        mPlayNextBtn = this.findViewById(R.id.next_btn);
+        mPlayPreBtn = this.findViewById(R.id.pre_btn);
+        mTraceTitleTv = this.findViewById(R.id.track_title);
+        if (!TextUtils.isEmpty(mTrackTitleText)) {
+            //第一次初始化就设置节目标题，以后在官方回调onSoundSwitch函数中调用onTrackTitleUpdate修改标题
+            mTraceTitleTv.setText(mTrackTitleText);
+        }
     }
 
     @Override
@@ -206,5 +242,14 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
     @Override
     public void onAdFinished() {
 
+    }
+
+    @Override
+    public void onTrackTitleUpdate(String title) {
+        this.mTrackTitleText = title;
+        if (mTraceTitleTv != null) {
+            //设置节目标题
+            mTraceTitleTv.setText(title);
+        }
     }
 }

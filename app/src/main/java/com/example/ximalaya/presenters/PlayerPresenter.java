@@ -29,6 +29,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     private static final String TAG = "PlayerPresenter";
     private XmPlayerManager mPlayerManager;
+    private String mTrackTitle;
 
     private PlayerPresenter() {
         //用以设置播放器列表
@@ -61,6 +62,10 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
         if (mPlayerManager != null) {
             mPlayerManager.setPlayList(list,playIndex);
+            isPlayListSet = true;
+            //第一次节目标题获取并设置
+            Track track = list.get(playIndex);
+            mTrackTitle = track.getTrackTitle();
         } else {
             LogUtil.d(TAG,"mPlayerManager 为空");
         }
@@ -91,12 +96,18 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void playPre() {
-
+        //上一曲
+        if (mPlayerManager != null) {
+            mPlayerManager.playPre();
+        }
     }
 
     @Override
     public void playNext() {
-
+        //下一曲
+        if (mPlayerManager != null) {
+            mPlayerManager.playNext();
+        }
     }
 
     @Override
@@ -168,6 +179,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void registerViewCallback(IPlayerCallback iPlayerCallback) {
+        iPlayerCallback.onTrackTitleUpdate(mTrackTitle);
         if (!mIPlayerCallbacks.contains(iPlayerCallback)) {
             mIPlayerCallbacks.add(iPlayerCallback);
         }
@@ -218,9 +230,20 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
         LogUtil.d(TAG,"onSoundPrepared...");
     }
 
+    //试听节目回调
     @Override
-    public void onSoundSwitch(PlayableModel playableModel, PlayableModel playableModel1) {
+    public void onSoundSwitch(PlayableModel lastModel, PlayableModel curModel) {
         LogUtil.d(TAG,"onSoundSwitch...");
+
+        //instanceof判断一个实例是否属于某种类型
+        if (curModel instanceof Track) {
+            Track currentTrack = (Track) curModel;
+            mTrackTitle = currentTrack.getTrackTitle();
+            LogUtil.d(TAG,"title --->" +mTrackTitle);
+            for (IPlayerCallback iPlayerCallback :mIPlayerCallbacks) {
+                iPlayerCallback.onTrackTitleUpdate(mTrackTitle);
+            }
+        }
     }
 
     @Override

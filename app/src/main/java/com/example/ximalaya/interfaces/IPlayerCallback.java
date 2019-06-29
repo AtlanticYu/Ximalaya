@@ -49,4 +49,7 @@ public interface IPlayerCallback {
 
     //广告结束
     void onAdFinished();
+
+    //更新节目标题
+    void onTrackTitleUpdate(String title);
 }
